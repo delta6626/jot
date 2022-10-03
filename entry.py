@@ -5,11 +5,13 @@
 userDetails = []
 
 import subprocess
-import sys
 import mysql.connector
+from ctypes import windll
 from tkinter import *
 import re
 from src import stylings
+
+windll.shcore.SetProcessDpiAwareness(1)
 
 # Connect to jotDB
 
@@ -25,8 +27,28 @@ jotCursor = jotDB.cursor()
 
 # Window opening functions
 
-def openSuccess():
-    pass;
+def openMain():
+    subprocess.Popen(["Python", "src/home.py"])
+    exit()
+
+def showSuccess():
+    f = open("userDetails", "w")
+    userDetails = [email.get(),"\n",password.get()]
+    f.writelines(userDetails)
+    f.close()
+    leftPanel.destroy()
+    rightPanel.destroy()
+    slWindow.config(background=stylings.jotDark)
+    successMessagePanel = Frame(slWindow, background=stylings.jotDark)
+    successMessage = Label(successMessagePanel, text="Congratulations!\nAccount creation was successful.", font=stylings.defaultLargeFont, background=stylings.jotDark, foreground=stylings.jotGreen)
+    successMessage.pack()
+    createSeparator(successMessagePanel, height=15, bg=stylings.jotDark)
+    proceedButton = Button(successMessagePanel, text="Let's get started.", width=28, border=0, font=stylings.defaultSmallFont,command=openMain)
+    proceedButton.bind("<Enter>", lambda e : proceedButton.config(background=stylings.jotGreen))
+    proceedButton.bind("<Leave>", lambda e : proceedButton.config(background="SystemButtonFace") )
+    proceedButton.pack()
+    successMessagePanel.place(anchor="center", relx=0.5, rely=0.5)
+
 
 # Utility functions for Entry
 
@@ -117,7 +139,7 @@ def signUp():
     else:
         jotCursor.execute(f"INSERT INTO users (email, password) VALUES(%s,%s)", (email.get(), password.get()))
         jotDB.close()
-        openSuccess()
+        showSuccess()
 
 def login():
     jotCursor.execute("SELECT id, password FROM users WHERE email = %s", (email.get(),))
@@ -148,7 +170,7 @@ def login():
 def createSeparator(master, height, bg):
     return Frame(master=master, height=height, background=bg).pack()
 
-w,h = 1100,650
+w,h = 1280,800
 slWindow = Tk()
 
 # Left panel layout
@@ -179,15 +201,19 @@ rightPanel.pack(side="right")
 rightPanelWc = Frame(rightPanel, background=stylings.jotGreen)
 
 header = Label(rightPanelWc, text="Welcome to Jot", font=stylings.defaultMediumFont, background=stylings.jotGreen, fg="black")
-email = Entry(rightPanelWc, width=30, font=stylings.defaultSmallFont, border=0, fg="black")
+email = Entry(rightPanelWc, width=32, font=stylings.defaultSmallFont, border=0, fg="black")
 email.insert(0,"  Enter your email")
 email.bind("<Button-1>", clearEmailPlaceholder)
-password = Entry(rightPanelWc, width=30, font=stylings.defaultSmallFont, border=0, fg="black")
+password = Entry(rightPanelWc, width=32, font=stylings.defaultSmallFont, border=0, fg="black")
 password.insert(0, "  Choose a password")
 password.bind("<Button-1>", clearPasswordPlaceholder)
-btnSignup = Button(rightPanelWc, text="Sign Up", width=30, border=0, font=stylings.defaultSmallFont, command=preCheck)
+btnSignup = Button(rightPanelWc, text="Sign Up", width=28, border=0, font=stylings.defaultSmallFont, command=preCheck)
+btnSignup.bind("<Enter>", lambda e : btnSignup.config(background=stylings.jotPink))
+btnSignup.bind("<Leave>", lambda e : btnSignup.config(background="SystemButtonFace") )
 warning = Label(rightPanelWc, background=stylings.jotGreen, fg=stylings.jotRed, font=stylings.defaultSmallFont)
 lblLogin = Label(rightPanelWc, text="Click here to login instead.", fg="black", background=stylings.jotGreen, font=stylings.defaultSmallFont)
+lblLogin.bind("<Enter>", lambda e : lblLogin.config(foreground=stylings.jotPink))
+lblLogin.bind("<Leave>", lambda e : lblLogin.config(foreground="Black") )
 lblLogin.bind("<Button-1>", switch)
 
 header.pack()
