@@ -32,7 +32,7 @@ def openMain():
     exit()
 
 def showSuccess():
-    f = open("userDetails", "w")
+    f = open("userDetails.txt", "w")
     userDetails = [email.get(),"\n",password.get()]
     f.writelines(userDetails)
     f.close()
