@@ -60,7 +60,7 @@ def clearEmailPlaceholder(event):
         password.insert(0, "  Choose a password")
 
 def clearPasswordPlaceholder(event):
-    if(password.get() == "  Choose a password"):
+    if(password.get() == "  Choose a password" or password.get()=="  Enter your password"):
         password.configure(state = "normal")
         password.delete(0, "end")
     if(email.get()==""):
@@ -70,9 +70,13 @@ def switch(event): #Switch the signup button with login button and vice versa
     if(btnSignup["text"] == "Sign Up"):
         btnSignup["text"] = "Login"
         lblLogin["text"] = "Click here to sign up instead."
+        password.delete(0, "end")
+        password.insert(0, "  Enter your password")
     elif(btnSignup["text"] == "Login"):
         btnSignup["text"] = "Sign Up"
         lblLogin["text"] = "Click here to login instead."
+        password.delete(0, "end")
+        password.insert(0, "  Choose a password")
 
 # Input validation functions
 
@@ -161,9 +165,8 @@ def login():
                 createSeparator(rightPanelWc, height=15, bg=stylings.jotGreen)
                 warning.pack()
         else:
-            #Proceed to the main window.
-            pass;
-    
+            jotDB.close()
+            openMain()
 
 # UI
 
@@ -201,10 +204,10 @@ rightPanel.pack(side="right")
 rightPanelWc = Frame(rightPanel, background=stylings.jotGreen)
 
 header = Label(rightPanelWc, text="Welcome to Jot", font=stylings.defaultMediumFont, background=stylings.jotGreen, fg="black")
-email = Entry(rightPanelWc, width=32, font=stylings.defaultSmallFont, border=0, fg="grey")
+email = Entry(rightPanelWc, width=32, font=stylings.defaultSmallFont, border=0, fg="black")
 email.insert(0,"  Enter your email")
 email.bind("<Button-1>", clearEmailPlaceholder)
-password = Entry(rightPanelWc, width=32, font=stylings.defaultSmallFont, border=0, fg="grey")
+password = Entry(rightPanelWc, width=32, font=stylings.defaultSmallFont, border=0, fg="black")
 password.insert(0, "  Choose a password")
 password.bind("<Button-1>", clearPasswordPlaceholder)
 btnSignup = Button(rightPanelWc, text="Sign Up", width=28, border=0, font=stylings.defaultSmallFont, command=preCheck)
