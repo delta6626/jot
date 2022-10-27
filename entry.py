@@ -33,7 +33,7 @@ def openMain():
 
 def showSuccess():
     f = open("userDetails.txt", "w")
-    userDetails = [email.get(),"\n",password.get()]
+    userDetails = [email.get(),"\n",password.get(),"\n","Untitled Note"]
     f.writelines(userDetails)
     f.close()
     leftPanel.destroy()

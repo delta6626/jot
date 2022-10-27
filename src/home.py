@@ -3,6 +3,7 @@ import mysql.connector
 from ctypes import windll
 from tkinter import *
 import stylings
+import subprocess
 
 windll.shcore.SetProcessDpiAwareness(1)
 
@@ -46,6 +47,10 @@ def fix():
         searchBar.insert(0, "  Search for a note....")
         searchBar.configure(state="normal")
         searchBar.configure(foreground="grey")
+    if(len(notesPanelMain.winfo_children())==0):
+        render(result)
+    if(len(notesPanelMain.winfo_children())==0):
+        displayMessage()
 
 def fixOnNotesPanelMain(event):
     notesPanel.focus()
@@ -59,29 +64,45 @@ def fixOnPrePanel(event):
     prePanel.focus()
     fix()
 
-def createNoteBox(noteTitle, noteText):
+def createNoteBox(noteTitle, noteId):
     def changeNoteBox(event):
-        text.config(background=stylings.jotGreen, foreground="black")
-        t.config(background=stylings.jotPink, foreground="black")
-        n.config(background=stylings.jotPink)
+        t.config(background=stylings.jotGray)
+        n.config(background=stylings.jotGray)
 
     def resetNoteBox(event):
-        text.config(background=stylings.jotGray, foreground="white")
-        t.config(background=stylings.jotGrayer, foreground="white")
+        t.config(background=stylings.jotGrayer)
         n.config(background=stylings.jotGrayer)
+    
+    def openNote(noteId):
+        print("I should open", noteId)
 
-    n = Frame(notesPanelMain, width=w-140, height=240,background=stylings.jotGrayer, cursor="hand2")
+    n = Frame(notesPanelMain, width=w-140, height=140,background=stylings.jotGrayer, cursor="hand2")
     n.pack(padx=40, pady=10)
-    text = Label(n, width=w-140, height=5, text=noteText[0:40]+"...", font=stylings.defaultMediumFont, background=stylings.jotGray, foreground="#fff")
-    text.place(anchor="center", rely=0.2, relx=0.5)
     t = Label(n, text="Titled : "+noteTitle, font=stylings.defaultMediumFont, background=stylings.jotGrayer, foreground="#fff")
-    t.place(anchor="center", rely=0.8, relx=0.5)
+    t.place(anchor="center", rely=0.5, relx=0.5)
     n.bind("<Enter>", changeNoteBox)
     n.bind("<Leave>", resetNoteBox)
+    n.bind("<Button-1>", lambda event:openNote(noteId=noteId))
+    t.bind("<Button-1>", lambda event:openNote(noteId=noteId))
 
+def updateList(event):
+    substring = sv.get()
+    if substring == "" or substring == None:
+        if(len(notesPanelMain.winfo_children())==0):
+            for note in result:
+                createNoteBox(noteTitle=note[1], noteId=note[0])
+        else:
+            pass;
+    else:
+        for widget in notesPanelMain.winfo_children():
+            widget.destroy()
+        for note in result:
+            if substring in note[1]:
+                createNoteBox(noteTitle=note[1], noteId = note[0])        
 
 def createNewNote(event):
-    pass;
+    subprocess.Popen(["Python", "src/editor.py"])
+    exit()
 
 # Setting up the top panel
 
@@ -90,7 +111,9 @@ topPanel.pack()
 topPanel.bind("<Button-1>", fixOnTopPanel)
 greeting = Label(topPanel, text="Hello, "+userName+".", background=stylings.jotBlue, foreground="white",font=stylings.defaultMediumFont)
 greeting.place(anchor="w", rely=0.5, x=40)
-searchBar = Entry(topPanel, width=40,font=stylings.defaultSmallFont, border=0, fg="grey")
+sv = StringVar()
+sv.trace("w", lambda name, index, mode, sv= sv:updateList(sv))
+searchBar = Entry(topPanel, width=40,font=stylings.defaultSmallFont, border=0, fg="grey", textvariable=sv)
 searchBar.insert(0, "  Search for a note....")
 searchBar.place(anchor="center", relx=0.5, rely=0.5, height=45)
 searchBar.bind("<Button-1>", clearSearchBox)
@@ -131,12 +154,14 @@ def displayMessage():
     noNotes.pack(padx= w/3.2 - noNotes.winfo_width(), pady=400-(noNotes.winfo_height()/2))
 def render(notesList):
     for note in notesList:
-        createNoteBox(noteTitle = note[0], noteText = note[1])
+        createNoteBox(noteTitle = note[1], noteId = note[0])
 
 # Checking if user has any notes
 
-jotCursor.execute("SELECT noteName, noteText from notes WHERE id = (%s)", (userId,))
+jotCursor.execute("SELECT noteId ,noteName from notes WHERE id = (%s)", (userId,))
 result = jotCursor.fetchall()
+jotDB.close()
+
 if(result == []):
     displayMessage()
 else:
