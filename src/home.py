@@ -4,6 +4,7 @@ from ctypes import windll
 from tkinter import *
 import stylings
 import subprocess
+import json
 
 windll.shcore.SetProcessDpiAwareness(1)
 
@@ -73,8 +74,18 @@ def createNoteBox(noteTitle, noteId):
         t.config(background=stylings.jotGrayer)
         n.config(background=stylings.jotGrayer)
     
-    def openNote(noteId):
-        print("I should open", noteId)
+    def openNote(noteId, noteTitle):
+        filePath = os.path.dirname(os.path.abspath(__file__))+"\details.json"
+        d = {
+            "id":noteId,
+            "title":noteTitle
+        }
+        f = open(filePath, "w")
+        j = json.dumps(d)
+        f.write(j)
+        f.close()
+        subprocess.Popen(["Python", "src/editor.py"])
+        exit()
 
     n = Frame(notesPanelMain, width=w-140, height=140,background=stylings.jotGrayer, cursor="hand2")
     n.pack(padx=40, pady=10)
@@ -82,8 +93,8 @@ def createNoteBox(noteTitle, noteId):
     t.place(anchor="center", rely=0.5, relx=0.5)
     n.bind("<Enter>", changeNoteBox)
     n.bind("<Leave>", resetNoteBox)
-    n.bind("<Button-1>", lambda event:openNote(noteId=noteId))
-    t.bind("<Button-1>", lambda event:openNote(noteId=noteId))
+    n.bind("<Button-1>", lambda event:openNote(noteId=noteId, noteTitle=noteTitle))
+    t.bind("<Button-1>", lambda event:openNote(noteId=noteId, noteTitle=noteTitle))
 
 def updateList(event):
     substring = sv.get()
@@ -160,7 +171,7 @@ def render(notesList):
 
 jotCursor.execute("SELECT noteId ,noteName from notes WHERE id = (%s)", (userId,))
 result = jotCursor.fetchall()
-jotDB.close()
+jotDB.close() 
 
 if(result == []):
     displayMessage()
