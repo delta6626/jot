@@ -10,4 +10,5 @@ jotGrayer = "#20242C"
 
 defaultLargeFont = ("Century", 25, "bold")
 defaultMediumFont = ("Century", 20, "bold")
+textEditorFont = ("Century", 20)
 defaultSmallFont = ("Century", 15, "bold")
