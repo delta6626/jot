@@ -2,9 +2,17 @@
 # Copyright (c) github.com/delta911ee | M. Hassan
 # Licensed under the MIT license
 
+import subprocess
+import os
+
+if(os.path.isfile("userDetails.txt")):
+    subprocess.Popen(["Python", "src/home.py"])
+    exit()
+else:
+    pass
+
 userDetails = []
 
-import subprocess
 import mysql.connector
 from ctypes import windll
 from tkinter import *
@@ -33,7 +41,7 @@ def openMain():
 
 def showSuccess():
     f = open("userDetails.txt", "w")
-    userDetails = [email.get(),"\n",password.get(),"\n","Untitled Note"]
+    userDetails = [email.get(),"\n",password.get(),"\n"]
     f.writelines(userDetails)
     f.close()
     leftPanel.destroy()
@@ -166,6 +174,10 @@ def login():
                 warning.pack()
         else:
             jotDB.close()
+            f = open("userDetails.txt", "w")
+            userDetails = [email.get(),"\n",password.get(),"\n"]
+            f.writelines(userDetails)
+            f.close()
             openMain()
 
 # UI

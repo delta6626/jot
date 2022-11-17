@@ -86,7 +86,7 @@ def goHome(event):
     exit()
 
 def saveNote(event):
-    if(editorWin.title() == "Untitled"):
+    if(editorWin.title() == "Untitled - Jot"):
         noteName = simpledialog.askstring(title="Name your note", prompt="Enter your note title....")
         if(str(noteName) == "" or noteName is None):
             messagebox.showerror(title="An error occured", message="Please provide a name to your note and try again.")
