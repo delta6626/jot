@@ -112,6 +112,15 @@ def updateList(event):
                 createNoteBox(noteTitle=note[1], noteId = note[0])        
 
 def createNewNote(event):
+    filePath = os.path.dirname(os.path.abspath(__file__))+"\details.json"
+    d = {
+        "id":0,
+        "title":"Untitled"
+    }
+    f = open(filePath, "w")
+    j = json.dumps(d)
+    f.write(j)
+    f.close()
     subprocess.Popen(["Python", "src/editor.py"])
     exit()
 

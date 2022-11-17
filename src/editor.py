@@ -1,7 +1,10 @@
 import os
+import subprocess
 import mysql.connector
 from ctypes import windll
 from tkinter import *
+from tkinter import simpledialog
+from tkinter import messagebox
 import stylings
 import json
 
@@ -25,6 +28,17 @@ jotDB = mysql.connector.connect(
 jotDB.autocommit = True
 jotCursor = jotDB.cursor()
 
+# Fetch user
+
+userNameFilePath = os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\userDetails.txt")
+f = open(userNameFilePath, "r")
+userDetails = f.readlines()
+f.close()
+userName = userDetails[0].split("@")[0].capitalize()
+jotCursor.execute("SELECT id FROM users WHERE email = (%s)", (userDetails[0].rstrip(),))
+for id in jotCursor.fetchone():
+    userId = id
+
 # Utiltiy
 
 def getNoteText():
@@ -35,8 +49,7 @@ def getNoteText():
     else:
         jotCursor.execute("SELECT noteText FROM notes WHERE noteId = (%s)", (details["id"],))
         global noteText
-        noteText = jotCursor.fetchone()[0]
-        jotDB.close() # Remove later
+        noteText = jotCursor.fetchone()[0].decode("utf-8")
         
 # Utility functions
 
@@ -64,14 +77,33 @@ def listItem(event):
 def selectFont(event):
     pass;
 
+
 def pickColor(event):
     pass;
 
 def goHome(event):
-    pass;
+    subprocess.Popen(["Python", "src/home.py"])
+    exit()
 
 def saveNote(event):
-    pass;
+    if(editorWin.title() == "Untitled"):
+        noteName = simpledialog.askstring(title="Name your note", prompt="Enter your note title....")
+        if(str(noteName) == "" or noteName is None):
+            messagebox.showerror(title="An error occured", message="Please provide a name to your note and try again.")
+        else:
+            t = textEditor.get("1.0", "end")
+            saveText = bytearray(t, encoding="utf-8")
+            jotCursor.execute("INSERT INTO notes (id, noteName, noteText) VALUES(%s,%s,%s)", (userId,noteName,saveText))
+            editorWin.title(noteName+" - Jot")
+            messagebox.showinfo(title="Note saved", message="Your note has been saved successfully.")
+    else:
+        t = textEditor.get("1.0", "end")
+        saveText = bytearray(t, encoding="utf-8")
+        f = open(filePath)
+        details = json.load(f)
+        i = details["id"]
+        jotCursor.execute("UPDATE notes SET noteText = (%s) WHERE noteId = (%s)", (saveText, i))
+        messagebox.showinfo(title="Note saved", message="Your note has been saved successfully.")
 
 # UI
 
