@@ -85,6 +85,27 @@ def goHome(event):
     subprocess.Popen(["Python", "src/home.py"])
     exit()
 
+def deleteNote(event):
+    f = open(filePath)
+    details = json.load(f)
+    noteId = details["id"]
+
+    yes = messagebox.askyesno("Delete Note", message="Are you sure you want to delete this note?")
+
+    if(yes):
+        if(noteId == 0 and editorWin.title()=="Untitled - Jot"):
+            subprocess.Popen(["Python", "src/home.py"])
+            exit()
+        elif(editorWin.title()!="Untitled - Jot"):
+            jotCursor.execute("DELETE FROM notes WHERE noteId = (%s)", (noteId,))
+            messagebox.showinfo(title="Deleted Note", message="Note deleted successfully.")
+            subprocess.Popen(["Python", "src/home.py"])
+            exit()
+    else:
+        pass
+        
+
+
 def saveNote(event):
     if(editorWin.title() == "Untitled - Jot"):
         noteName = simpledialog.askstring(title="Name your note", prompt="Enter your note title....")
@@ -95,7 +116,18 @@ def saveNote(event):
             saveText = bytearray(t, encoding="utf-8")
             jotCursor.execute("INSERT INTO notes (id, noteName, noteText) VALUES(%s,%s,%s)", (userId,noteName,saveText))
             editorWin.title(noteName+" - Jot")
+            i = jotCursor.execute("SELECT LAST_INSERT_ID();")
+            id = jotCursor.fetchone()[0]
+            d = {
+                "id":id,
+                "title":noteName
+            }
+            f = open(filePath, "w")
+            j = json.dumps(d)
+            f.write(j)
+            f.close()
             messagebox.showinfo(title="Note saved", message="Your note has been saved successfully.")
+            
     else:
         t = textEditor.get("1.0", "end")
         saveText = bytearray(t, encoding="utf-8")
@@ -163,7 +195,15 @@ home = Label(controlsPanel, image=homeIcon, background=stylings.jotBlue)
 home.bind("<Enter>", lambda e: home.config(image=homeIconHover))
 home.bind("<Leave>", lambda e: home.config(image=homeIcon))
 home.bind("<Button-1>", goHome)
-home.place(anchor="e",x=1617, rely=0.5)
+home.place(anchor="e",x=1504, rely=0.5)
+
+deleteIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\Delete.png"))
+deleteIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\DeleteHover.png"))
+delete = Label(controlsPanel, image=deleteIcon, background=stylings.jotBlue)
+delete.bind("<Enter>", lambda e: delete.config(image=deleteIconHover))
+delete.bind("<Leave>", lambda e: delete.config(image=deleteIcon))
+delete.bind("<Button-1>", deleteNote)
+delete.place(anchor="e",x=1617, rely=0.5)
 
 saveIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\Save.png"))
 saveIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\SaveHover.png"))
