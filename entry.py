@@ -215,7 +215,7 @@ rightPanel.pack(side="right")
 
 rightPanelWc = Frame(rightPanel, background=stylings.jotGreen)
 
-header = Label(rightPanelWc, text="Welcome to Jot", font=stylings.defaultMediumFont, background=stylings.jotGreen, fg="black")
+header = Label(rightPanelWc, text="Welcome to Jot", font=stylings.defaultLargeFont, background=stylings.jotGreen, fg="black")
 email = Entry(rightPanelWc, width=32, font=stylings.defaultSmallFont, border=0, fg="black")
 email.insert(0,"  Enter your email")
 email.bind("<Button-1>", clearEmailPlaceholder)

@@ -5,6 +5,8 @@ from ctypes import windll
 from tkinter import *
 from tkinter import simpledialog
 from tkinter import messagebox
+from tkinter import font
+from tkinter import colorchooser
 import stylings
 import json
 
@@ -75,11 +77,31 @@ def listItem(event):
     textEditor.insert("end", "• ")
 
 def selectFont(event):
-    pass;
+    fonts = font.families()
+    fontSelector = Toplevel(editorWin)
+    def updateFont(e):
+        try:
+            selected = display.get(display.curselection())
+            textEditor.config(font=str(fonts[fonts.index(selected)])+" 20")
+            fontSelector.destroy()
+        except:
+            messagebox.showerror(title="Font error", message="Sorry. This font is not supported.")
 
+    fontSelector.title("Select Font")
+    fontSelector.geometry("400x400")
+    display = Listbox(fontSelector)
+    display.pack(fill="both", expand="yes", side="left")
+    scroll = Scrollbar(fontSelector)
+    scroll.pack(side="right", fill="y", expand="no")
+    scroll.configure(command=display.yview)
+    display.configure(yscrollcommand=scroll.set)
+    for item in fonts:
+        display.insert("end",item)
+    display.bind("<<ListboxSelect>>", updateFont)
 
 def pickColor(event):
-    pass;
+    color = colorchooser.askcolor(title="Choose color")
+    textEditor.config(foreground=color[1])
 
 def goHome(event):
     subprocess.Popen(["Python", "src/home.py"])
