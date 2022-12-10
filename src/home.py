@@ -2,6 +2,7 @@ import os
 import mysql.connector
 from ctypes import windll
 from tkinter import *
+from tkinter import messagebox
 import stylings
 import subprocess
 import json
@@ -124,26 +125,50 @@ def createNewNote(event):
     subprocess.Popen(["Python", "src/editor.py"])
     exit()
 
+def logOut(event):
+    yes = messagebox.askyesno("Log out", message="Are you sure you want to log out?")
+    if(yes):
+        os.remove(os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\userDetails.txt"))
+        subprocess.Popen(["Python",os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\entry.py")])
+        exit()
+    else:
+        pass;
+
 # Setting up the top panel
 
 topPanel = Frame(home, width=w, height=80, background=stylings.jotBlue)
+
 topPanel.pack()
 topPanel.bind("<Button-1>", fixOnTopPanel)
+
 greeting = Label(topPanel, text="Hello, "+userName+".", background=stylings.jotBlue, foreground="white",font=stylings.defaultMediumFont)
 greeting.place(anchor="w", rely=0.5, x=40)
+
 sv = StringVar()
 sv.trace("w", lambda name, index, mode, sv= sv:updateList(sv))
+
 searchBar = Entry(topPanel, width=40,font=stylings.defaultSmallFont, border=0, fg="grey", textvariable=sv)
 searchBar.insert(0, "  Search for a note....")
 searchBar.place(anchor="center", relx=0.5, rely=0.5, height=45)
 searchBar.bind("<Button-1>", clearSearchBox)
-plusIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\createButton.png"))
-plusIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\createButtonHover.png"))
+
+plusIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\Create.png"))
+plusIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\CreateHover.png"))
+
+logOutIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\LogOut.png"))
+logOutIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\LogOutHover.png"))
+
 createButton = Label(topPanel, image=plusIcon, background=stylings.jotBlue)
 createButton.bind("<Enter>", lambda e: createButton.config(image=plusIconHover))
 createButton.bind("<Leave>", lambda e: createButton.config(image=plusIcon))
 createButton.bind("<Button-1>", createNewNote)
-createButton.place(anchor="e", rely=0.4, x=1710)
+createButton.place(anchor="e", rely=0.5, x=1650)
+
+logOutButton = Label(topPanel, image=logOutIcon, background=stylings.jotBlue)
+logOutButton.bind("<Enter>", lambda e: logOutButton.config(image=logOutIconHover))
+logOutButton.bind("<Leave>", lambda e: logOutButton.config(image=logOutIcon))
+logOutButton.bind("<Button-1>", logOut)
+logOutButton.place(anchor="e", rely=0.5, x=1710)
 
 # pre panel
 
