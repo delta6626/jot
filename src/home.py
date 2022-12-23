@@ -141,7 +141,7 @@ topPanel = Frame(home, width=w, height=80, background=stylings.jotBlue)
 topPanel.pack()
 topPanel.bind("<Button-1>", fixOnTopPanel)
 
-greeting = Label(topPanel, text="Hello, "+userName+".", background=stylings.jotBlue, foreground="white",font=stylings.defaultMediumFont)
+greeting = Label(topPanel, text="Hello, "+userName+"!", background=stylings.jotBlue, foreground="white",font=stylings.defaultMediumFont)
 greeting.place(anchor="w", rely=0.5, x=40)
 
 sv = StringVar()

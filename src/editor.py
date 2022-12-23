@@ -9,6 +9,7 @@ from tkinter import font
 from tkinter import colorchooser
 import stylings
 import json
+from math import *
 
 windll.shcore.SetProcessDpiAwareness(1)
 
@@ -103,6 +104,15 @@ def pickColor(event):
     color = colorchooser.askcolor(title="Choose color")
     textEditor.config(foreground=color[1])
 
+def evaluateExpression(event):
+    e = str(textEditor.selection_get())
+    try:
+        ans = eval(e)
+        textEditor.insert(textEditor.index(INSERT), ans)
+        textEditor.delete("sel.first", "sel.last")
+    except:
+        messagebox.showerror(title="An error occured", message="Invalid math expression")
+
 def goHome(event):
     subprocess.Popen(["Python", "src/home.py"])
     exit()
@@ -193,7 +203,7 @@ list = Label(controlsPanel, image=listIcon, background=stylings.jotBlue)
 list.bind("<Enter>", lambda e: list.config(image=listIconHover))
 list.bind("<Leave>", lambda e: list.config(image=listIcon))
 list.bind("<Button-1>", listItem)
-list.place(anchor="w",relx=0.4475, rely=0.5)
+list.place(anchor="w",relx=0.440, rely=0.5)
 
 fontIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\Font.png"))
 fontIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\FontHover.png"))
@@ -201,7 +211,7 @@ fontChanger = Label(controlsPanel, image=fontIcon, background=stylings.jotBlue)
 fontChanger.bind("<Enter>", lambda e: fontChanger.config(image=fontIconHover))
 fontChanger.bind("<Leave>", lambda e: fontChanger.config(image=fontIcon))
 fontChanger.bind("<Button-1>", selectFont)
-fontChanger.place(anchor="w",relx=0.4825, rely=0.5)
+fontChanger.place(anchor="w",relx=0.475, rely=0.5)
 
 colorpickerIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\ColorPicker.png"))
 colorpickerIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\ColorPickerHover.png"))
@@ -209,7 +219,15 @@ colorpicker = Label(controlsPanel, image=colorpickerIcon, background=stylings.jo
 colorpicker.bind("<Enter>", lambda e: colorpicker.config(image=colorpickerIconHover))
 colorpicker.bind("<Leave>", lambda e: colorpicker.config(image=colorpickerIcon))
 colorpicker.bind("<Button-1>", pickColor)
-colorpicker.place(anchor="w",relx=0.5175, rely=0.5)
+colorpicker.place(anchor="w",relx=0.510, rely=0.5)
+
+evaluateIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\Evaluate.png"))
+evaluateIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\EvaluateHover.png"))
+evaluate = Label(controlsPanel, image=evaluateIcon, background=stylings.jotBlue)
+evaluate.bind("<Enter>", lambda e: evaluate.config(image=evaluateIconHover))
+evaluate.bind("<Leave>", lambda e: evaluate.config(image=evaluateIcon))
+evaluate.bind("<Button-1>", evaluateExpression)
+evaluate.place(anchor="w",relx=0.545, rely=0.5)
 
 homeIcon = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\Home.png"))
 homeIconHover = PhotoImage(file=os.path.dirname(os.path.abspath(__file__)).replace("\src", "\\images\HomeHover.png"))
