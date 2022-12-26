@@ -39,14 +39,14 @@ for id in jotCursor.fetchone():
 # Utility functions
 
 def clearSearchBox(event):
-    if(searchBar.get()=="  Search for a note...."):
+    if(searchBar.get()=="  Type here to search.."):
         searchBar.configure(state="normal")
         searchBar.configure(foreground="black")
         searchBar.delete(0, "end")
 
 def fix():
     if(searchBar.get()==""):
-        searchBar.insert(0, "  Search for a note....")
+        searchBar.insert(0, "  Type here to search..")
         searchBar.configure(state="normal")
         searchBar.configure(foreground="grey")
     if(len(notesPanelMain.winfo_children())==0):
@@ -148,7 +148,7 @@ sv = StringVar()
 sv.trace("w", lambda name, index, mode, sv= sv:updateList(sv))
 
 searchBar = Entry(topPanel, width=40,font=stylings.defaultSmallFont, border=0, fg="grey", textvariable=sv)
-searchBar.insert(0, "  Search for a note....")
+searchBar.insert(0, "  Type here to search..")
 searchBar.place(anchor="center", relx=0.5, rely=0.5, height=45)
 searchBar.bind("<Button-1>", clearSearchBox)
 

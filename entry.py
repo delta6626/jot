@@ -197,7 +197,7 @@ leftPanelWC = Frame(leftPanel, background=stylings.jotDark)
 
 logo = PhotoImage(file="images/jotLogoSlwindow.png")
 logoCont = Label(leftPanelWC, image=logo, background=stylings.jotDark)
-heroText1 = Label(leftPanelWC, text="Take\nthe best notes.", font=stylings.defaultLargeFont,
+heroText1 = Label(leftPanelWC, text="Take notes quickly.", font=stylings.defaultLargeFont,
             background=stylings.jotDark, foreground="#fff")
 heroText2 = Label(leftPanelWC, text="Meet Jot.", font=stylings.defaultLargeFont,
             background=stylings.jotDark, foreground="#fff")
