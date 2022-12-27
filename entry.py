@@ -159,7 +159,7 @@ def login():
     
     if result == []:
         try:
-            warning.config(text="This Email does not exists. Create a new account.")
+            warning.config(text="This Email does not exist. Create a new account.")
             return warning.pack_info()
         except:
             createSeparator(rightPanelWc, height=15, bg=stylings.jotGreen)
