@@ -57,9 +57,7 @@ This is one of my early Python projects I did in high schol — a simple note-ta
 
 I, uh... didn’t save the original schema 😅  
 If you want to run this project, you’ll likely have to **reverse-engineer the database** by reading through the code and figuring out what tables and fields it’s expecting.
-
-Could be a fun little puzzle if you're into that kind of thing—  
-and if you *do* end up recreating the schema, feel free to open a PR and help out the next brave soul 🙌
+Could be a fun little puzzle if you're into that kind of thing, and if you *do* end up recreating the schema, feel free to open a PR and help out the next brave soul 🙌
 
 ---
 
@@ -88,6 +86,6 @@ I might come back to this someday and rewrite it with Flask or PyQt—or at leas
 
 ## 🙏 Acknowledgements
 
-Shoutout to Stack Overflow, docs, and YouTube tutorials that kept me afloat while I figured this all out 💻
+Shoutout to Stack Overflow, docs, and YouTube tutorials that kept me afloat while I figured this all out.
 
 ---
